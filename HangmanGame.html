@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+	<title>The Hangman Game</title>
+	
+	<!-- Bootstrap Core CSS -->
+	 <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+	<!-- Custom Fonts -->
+	<link href="assets/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic,900,900italic' rel='stylesheet' type='text/css'>
+
+	<!--Theme CSS-->
+	<link href="assets/css/creative.min.css" rel="stylesheet">
+
+
+</head>
+
+<body>
+
+	<nav id="mainNav" class="navbar navbar-default navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+               <span class="sr-only">Toggle navigation</span> Menu <i class="fa fa-bars"></i>
+                </button>
+                <a class="navbar-brand page-scroll" href="#page-top">The Hangman Game</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="#about">About</a>
+                    </li>
+                    <li>
+                        <a href="#services">How to play</a>
+                    </li>
+       
+                    <li>
+                        <a href="#contact">Contact</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container-fluid -->
+    </nav>
+
+ 
+	<!--Main section-->
+    <header>
+        <div class="header-content">
+            <div class="header-content-inner">
+
+                <p id="welcome-name">Welcome Guest</p>
+
+                <hr>
+
+                <button id="startgame">Click to play</button>
+
+                <br>
+
+                <div id="tallies"></div>
+
+                <div id="game-area"></div>
+
+                <div id="letterSpent-display"></div>
+
+                <div id="win-lost"></div>
+
+            </div>
+            <!--header-content-inner-->
+        </div>
+        <!--header-content-->
+       
+    </header>
+
+
+	<!--Footer-->
+	<section id="contact">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 text-center">
+                    <h2 class="section-heading">The Hangman Game</h2>
+                    <hr class="primary">
+                    <p>This game is created by Uyen Lam and partly fulfills the requirements for Homework 3 at the Northwestern Coding Bootcamp 2016</p>
+                </div>
+               
+                <div class="col-lg-8 col-lg-offset-2 text-center">
+                    <i class="fa fa-envelope-o fa-3x sr-contact"></i>
+                    <p><a href="mailto:your-email@your-domain.com">uyenlam2017@u.nortwestern.edu</a></p>
+                </div>
+                 <div class="col-lg-8 col-lg-offset-2 text-center">
+                    <hr class="primary">
+                    <p>Creative Theme by StartBootstrap</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+	<script>
+			//Create a variable for the "Click to play" button
+		var start = document.getElementById("startgame");
+
+		//Words database
+		var wordBank = ["vietnam","thailand","cambodia","azerbaijan","taiwan","bangladesh", "srilanka", "korea", "nepal","mongolia","indonesia"];
+		console.log(wordBank);
+
+		var letterSpent = [];
+
+		//Tallies
+        var userTries = 0;
+        var triesLeft = 10;
+		var userWins = 0;
+		var userLosses = 0;
+
+		//Alert sound
+		// var audio = new Audio();
+
+
+        //----PROCESS---------------------------------------
+
+		start.onclick = function(){
+
+            var computerChoice = wordBank[Math.floor(Math.random()*wordBank.length)].split("");
+            console.log("Computer Choice:")
+            console.log(computerChoice);
+
+            var computerChoiceHold = computerChoice;
+
+            // displays the word on the screen
+
+            for (var i = 0; i < computerChoiceHold.length; i++) {
+                computerChoiceHold[i] = "_ ";
+            }
+
+            function printChoice(){
+                for (var i = 0; i < computerChoiceHold.length; i++){
+
+                        var computerChoiceDisplay = document.getElementById("game-area");
+
+                        var choiceText = document.createTextNode(computerChoiceHold[i]);
+
+                        computerChoiceDisplay.appendChild(choiceText)
+                }
+            }
+
+            printChoice();
+                
+
+
+            // Displays beginning tallies information 
+            var talliesDisplay = document.getElementById("tallies");
+            var talliesText = document.createElement("p");
+            talliesDisplay.appendChild(talliesText);
+
+            function showTallies() {
+            	talliesDisplay.innerHTML = ("Tries left: " + triesLeft + "  |  Wins: " + userWins + "  |  Losses: " + userLosses);
+            }
+
+            showTallies();
+
+
+
+
+            // When the player presses a key
+            document.onkeyup = function(event){
+
+                var userInput = String.fromCharCode(event.keyCode).toLowerCase();
+                console.log("User Input:")
+                console.log(userInput);
+
+                var computerOutput = computerChoice.indexOf(userInput.toString());
+                console.log("Computer Output:")
+                console.log(computerOutput);
+
+                // Evaluating the results
+                if (computerOutput===-1){
+
+                        userLosses++;
+                        console.log("User Losses:")
+                        console.log(userLosses);
+                        showTallies();
+                        // alert()
+                        // audio.play();
+
+
+                    // Records the userInput as one of the letters spent
+        		    if (letterSpent.indexOf(userInput.toString())===-1){
+                        letterSpent.push(userInput);
+                        console.log("Letter Spent:");
+                        console.log(letterSpent);
+
+                        userTries++;
+                        console.log("User Tries:");
+                        console.log(userTries);
+                   
+                        // lowers the number of tries
+                        triesLeft--;
+                        console.log("Tries Left");
+                        console.log(triesLeft);
+                    }
+                }
+
+            
+                else { 
+                    userWins++;
+                        console.log("User Wins:")
+                        console.log(userWins);
+                        showTallies();
+                }
+                
+            
+
+            
+
+                
+                // Display the letterSpent on the screen
+        		document.getElementById("letterSpent-display").innerHTML = letterSpent;
+
+                }
+            }
+
+
+// if (userTries === 10) {
+
+//                         var winLostDisplay = document.getElementById("win-lost");
+//                         var winLostDisplayP = document.createElement("p");
+//                         winLostDisplay.appendChild(winLostDisplayP);
+
+//                         function winLostDisplayText() {
+//                             winLostDisplay.innerHTML = ("Game Over!");
+//                         }
+//                         winLostDisplayText();
+
+     //    function getBlanks(arr) {
+
+    	// 	var htmlElements = "";
+    	// 	for (var i = 0; i < word.length; i++) {
+     // 		htmlElements += '<span>_</span>';
+    	// }
+    	// 	var blanks = document.getElementById("word");
+    	// 	blanks.innerHTML = htmlElements;
+     //    }
+
+		//Puts the guest name input in the game's welcome line
+		// ('#name-input').submit(function(){
+  //           var guestName = $(this).serialize();
+  //       });
+
+		// var welcomeName = "<p>Welcome, </p>" + guestName;
+
+  //       //Change the info on line 60
+		// document.querySelector('#welcome-name').innerHTML = welcomeName;
+		
+	</script>
+	
+</body>
+</html>
